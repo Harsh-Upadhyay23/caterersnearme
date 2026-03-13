@@ -1,0 +1,164 @@
+import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import CheckoutModal from './CheckoutModal';
+
+const CartSidebar = () => {
+  const { cartItem, isCartOpen, setIsCartOpen, guestCount, setGuestCount, totalPrice, clearCart } = useCart();
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  if (!isCartOpen) return null;
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+        onClick={() => setIsCartOpen(false)}
+      />
+
+      {/* Sidebar */}
+      <div className="fixed right-0 top-0 h-full w-full max-w-[420px] z-50 bg-[#0e0e14] border-l border-white/10 shadow-2xl flex flex-col animate-slide-in-right overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#111116]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-amber-400/10 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h2 className="text-base font-bold text-white">Your Cart</h2>
+          </div>
+          <button
+            onClick={() => setIsCartOpen(false)}
+            className="w-8 h-8 rounded-full hover:bg-white/10 text-gray-400 flex items-center justify-center"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6">
+          {!cartItem ? (
+            <div className="flex flex-col items-center justify-center h-full text-center py-20">
+              <div className="w-20 h-20 bg-white/[0.03] rounded-full flex items-center justify-center mb-4 border border-white/5">
+                <svg className="w-9 h-9 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <p className="text-gray-400 font-medium">Your cart is empty</p>
+              <p className="text-gray-600 text-sm mt-1">Select a menu package from a caterer</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Selected Menu Card */}
+              <div className="bg-[#111116] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-3xl pointer-events-none" />
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">{cartItem.catererName}</p>
+                    <h3 className="text-lg font-bold text-white">{cartItem.menuName}</h3>
+                    {cartItem.description && <p className="text-xs text-gray-400 mt-1">{cartItem.description}</p>}
+                  </div>
+                  <span className={`shrink-0 mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
+                    cartItem.type === 'Veg' ? 'bg-green-500/10 text-green-400' :
+                    cartItem.type === 'Non-Veg' ? 'bg-red-500/10 text-red-400' :
+                    'bg-amber-500/10 text-amber-400'
+                  }`}>{cartItem.type}</span>
+                </div>
+
+                {/* Dishes Preview */}
+                {cartItem.dishes && cartItem.dishes.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wide mb-2">Includes</p>
+                    <div className="flex flex-wrap gap-1">
+                      {cartItem.dishes.slice(0, 6).map((d, i) => (
+                        <span key={i} className="text-[11px] text-gray-400 bg-white/[0.03] border border-white/[0.05] px-2 py-0.5 rounded">{d}</span>
+                      ))}
+                      {cartItem.dishes.length > 6 && (
+                        <span className="text-[11px] text-amber-500 font-semibold">+{cartItem.dishes.length - 6} more</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                  <p className="text-sm text-gray-400">₹{cartItem.pricePerPerson.toLocaleString('en-IN')}<span className="text-xs text-gray-600">/person</span></p>
+                  <button onClick={clearCart} className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    Remove
+                  </button>
+                </div>
+              </div>
+
+              {/* Guest Count */}
+              <div className="bg-[#111116] border border-white/10 rounded-2xl p-5">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Number of Guests</label>
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => setGuestCount(g => Math.max(10, g - 10))}
+                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-white flex items-center justify-center text-lg font-bold transition-all"
+                  >−</button>
+                  <div className="text-center">
+                    <span className="text-4xl font-bold text-white">{guestCount}</span>
+                    <p className="text-xs text-gray-600 mt-1">guests</p>
+                  </div>
+                  <button
+                    onClick={() => setGuestCount(g => g + 10)}
+                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-white flex items-center justify-center text-lg font-bold transition-all"
+                  >+</button>
+                </div>
+                <input
+                  type="range" min={10} max={2000} step={10}
+                  value={guestCount}
+                  onChange={e => setGuestCount(parseInt(e.target.value))}
+                  className="w-full mt-4 accent-amber-400"
+                />
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="bg-[#111116] border border-white/10 rounded-2xl p-5 space-y-3">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Price Breakdown</p>
+                <div className="flex justify-between text-sm text-gray-400">
+                  <span>₹{cartItem.pricePerPerson} × {guestCount} guests</span>
+                  <span className="text-white">₹{totalPrice.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="border-t border-white/10 pt-3 flex justify-between items-center">
+                  <span className="font-bold text-white">Total</span>
+                  <span className="text-2xl font-bold text-amber-400">₹{totalPrice.toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer CTA */}
+        {cartItem && (
+          <div className="p-6 border-t border-white/10 bg-[#111116]">
+            <button
+              onClick={() => setShowCheckout(true)}
+              className="btn-primary w-full py-4 text-sm font-bold shadow-[0_0_20px_rgba(251,191,36,0.2)] flex items-center justify-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Proceed to Checkout
+            </button>
+            <p className="text-center text-[11px] text-gray-600 mt-3">No payment required now. Caterer will confirm your booking.</p>
+          </div>
+        )}
+      </div>
+
+      {showCheckout && <CheckoutModal onClose={() => setShowCheckout(false)} />}
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes slide-in-right {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-slide-in-right { animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+      ` }} />
+    </>
+  );
+};
+
+export default CartSidebar;
