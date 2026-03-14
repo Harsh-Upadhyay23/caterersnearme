@@ -141,12 +141,14 @@ const CatererRegister = () => {
       </div>
 
       {/* ── Right Side (Image) ── */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-[#111116] border-l border-white/5 overflow-hidden">
-        {/* Abstract Background Design */}
-        <div className="absolute top-0 right-0 w-full h-full opacity-30">
-          <div className="absolute -top-[20%] -right-[10%] w-[70%] h-[70%] rounded-full bg-amber-500/20 blur-[120px]"></div>
-          <div className="absolute bottom-[10%] -left-[10%] w-[60%] h-[60%] rounded-full bg-orange-600/10 blur-[100px]"></div>
-        </div>
+      <div className="hidden lg:flex lg:w-1/2 relative border-l border-white/5 overflow-hidden">
+        <img 
+          src="https://media.weddingz.in/images/17c01af61bd0a77a4638e5dce61650c5/5-wedding-caterers-in-mumbai-famous-for-their-lip-smacking-meals.jpg" 
+          alt="Catering Partner"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-black/70 to-black/40" />
+        <div className="absolute inset-0 bg-amber-500/10 mix-blend-overlay" />
 
         <div className="relative z-10 p-16 flex flex-col justify-between h-full w-full">
           <div className="flex justify-start w-full">

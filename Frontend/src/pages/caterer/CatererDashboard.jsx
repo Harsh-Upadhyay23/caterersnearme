@@ -15,6 +15,7 @@ const CatererDashboard = () => {
     city: '',
     address: '',
     phone: '',
+    pricePerPlate: '',
     description: '',
     cuisines: '',
     services: '',
@@ -22,6 +23,7 @@ const CatererDashboard = () => {
   });
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState('');
+  const [profileSaved, setProfileSaved] = useState(false);
 
   // Initialize data
   useEffect(() => {
@@ -33,6 +35,7 @@ const CatererDashboard = () => {
         city: caterer.city || '',
         address: caterer.address || '',
         phone: caterer.phone || '',
+        pricePerPlate: caterer.pricePerPlate || '',
         description: caterer.description || '',
         cuisines: caterer.cuisines ? caterer.cuisines.join(', ') : '',
         services: caterer.services ? caterer.services.join(', ') : '',
@@ -61,6 +64,7 @@ const CatererDashboard = () => {
       
       await updateProfile(payload);
       setMessage('Profile updated successfully!');
+      setProfileSaved(true);
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage(err.message || 'Failed to update profile');
@@ -145,8 +149,27 @@ const CatererDashboard = () => {
                         <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} className="input-field" required />
                       </div>
                       <div>
+                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Price Per Plate (₹)</label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-sm pointer-events-none select-none">₹</span>
+                          <input
+                            type="number"
+                            name="pricePerPlate"
+                            value={profileData.pricePerPlate}
+                            onChange={handleProfileChange}
+                            className="input-field pl-8"
+                            placeholder="e.g. 450"
+                            min="1"
+                          />
+                        </div>
+                      </div>
+                      <div>
                         <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Location (General)</label>
                         <input type="text" name="location" value={profileData.location} onChange={handleProfileChange} className="input-field" placeholder="e.g. Andheri West" required />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">City</label>
+                        <input type="text" name="city" value={profileData.city} onChange={handleProfileChange} className="input-field" placeholder="e.g. Mumbai" />
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Full Address</label>
@@ -170,7 +193,19 @@ const CatererDashboard = () => {
                       </div>
                     </div>
                     
-                    <div className="flex justify-end pt-4 border-t border-white/5">
+                    <div className="flex justify-end items-center gap-4 pt-4 border-t border-white/5">
+                      {profileSaved && (
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('images')}
+                          className="flex items-center gap-2 px-8 py-2.5 bg-amber-400 hover:bg-amber-300 text-gray-950 font-bold rounded-xl transition-all duration-200 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_28px_rgba(251,191,36,0.45)] hover:scale-105 active:scale-95"
+                        >
+                          Next — Upload Images
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      )}
                       <button type="submit" disabled={isUpdating} className="btn-primary px-8 py-2.5">
                         {isUpdating ? 'Saving...' : 'Save Profile'}
                       </button>

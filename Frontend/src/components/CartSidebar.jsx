@@ -1,19 +1,23 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import CheckoutModal from './CheckoutModal';
 
 const CartSidebar = () => {
-  const { cartItem, isCartOpen, setIsCartOpen, guestCount, setGuestCount, totalPrice, clearCart } = useCart();
+  const { cartItems, removeCartItem, isCartOpen, setIsCartOpen, guestCount, setGuestCount, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showCheckout, setShowCheckout] = useState(false);
 
   if (!isCartOpen) return null;
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop - pointer-events-none so user can add more menus while cart is open */}
       <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-        onClick={() => setIsCartOpen(false)}
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] pointer-events-none"
       />
 
       {/* Sidebar */}
@@ -40,7 +44,7 @@ const CartSidebar = () => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {!cartItem ? (
+          {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-20">
               <div className="w-20 h-20 bg-white/[0.03] rounded-full flex items-center justify-center mb-4 border border-white/5">
                 <svg className="w-9 h-9 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,44 +56,48 @@ const CartSidebar = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Selected Menu Card */}
-              <div className="bg-[#111116] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-3xl pointer-events-none" />
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div>
-                    <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">{cartItem.catererName}</p>
-                    <h3 className="text-lg font-bold text-white">{cartItem.menuName}</h3>
-                    {cartItem.description && <p className="text-xs text-gray-400 mt-1">{cartItem.description}</p>}
-                  </div>
-                  <span className={`shrink-0 mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
-                    cartItem.type === 'Veg' ? 'bg-green-500/10 text-green-400' :
-                    cartItem.type === 'Non-Veg' ? 'bg-red-500/10 text-red-400' :
-                    'bg-amber-500/10 text-amber-400'
-                  }`}>{cartItem.type}</span>
-                </div>
+              {/* Selected Menu Cards */}
+              <div className="space-y-4">
+                {cartItems.map((item) => (
+                  <div key={item.menuId} className="bg-[#111116] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-3xl pointer-events-none" />
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div>
+                        <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">{item.catererName}</p>
+                        <h3 className="text-lg font-bold text-white">{item.menuName}</h3>
+                        {item.description && <p className="text-xs text-gray-400 mt-1">{item.description}</p>}
+                      </div>
+                      <span className={`shrink-0 mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
+                        item.type === 'Veg' ? 'bg-green-500/10 text-green-400' :
+                        item.type === 'Non-Veg' ? 'bg-red-500/10 text-red-400' :
+                        'bg-amber-500/10 text-amber-400'
+                      }`}>{item.type}</span>
+                    </div>
 
-                {/* Dishes Preview */}
-                {cartItem.dishes && cartItem.dishes.length > 0 && (
-                  <div className="mb-4">
-                    <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wide mb-2">Includes</p>
-                    <div className="flex flex-wrap gap-1">
-                      {cartItem.dishes.slice(0, 6).map((d, i) => (
-                        <span key={i} className="text-[11px] text-gray-400 bg-white/[0.03] border border-white/[0.05] px-2 py-0.5 rounded">{d}</span>
-                      ))}
-                      {cartItem.dishes.length > 6 && (
-                        <span className="text-[11px] text-amber-500 font-semibold">+{cartItem.dishes.length - 6} more</span>
-                      )}
+                    {/* Dishes Preview */}
+                    {item.dishes && item.dishes.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wide mb-2">Includes</p>
+                        <div className="flex flex-wrap gap-1">
+                          {item.dishes.slice(0, 6).map((d, i) => (
+                            <span key={i} className="text-[11px] text-gray-400 bg-white/[0.03] border border-white/[0.05] px-2 py-0.5 rounded">{d}</span>
+                          ))}
+                          {item.dishes.length > 6 && (
+                            <span className="text-[11px] text-amber-500 font-semibold">+{item.dishes.length - 6} more</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                      <p className="text-sm text-gray-400">₹{item.pricePerPerson.toLocaleString('en-IN')}<span className="text-xs text-gray-600">/person</span></p>
+                      <button onClick={() => removeCartItem(item.menuId)} className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        Remove
+                      </button>
                     </div>
                   </div>
-                )}
-
-                <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                  <p className="text-sm text-gray-400">₹{cartItem.pricePerPerson.toLocaleString('en-IN')}<span className="text-xs text-gray-600">/person</span></p>
-                  <button onClick={clearCart} className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                    Remove
-                  </button>
-                </div>
+                ))}
               </div>
 
               {/* Guest Count */}
@@ -121,7 +129,11 @@ const CartSidebar = () => {
               <div className="bg-[#111116] border border-white/10 rounded-2xl p-5 space-y-3">
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Price Breakdown</p>
                 <div className="flex justify-between text-sm text-gray-400">
-                  <span>₹{cartItem.pricePerPerson} × {guestCount} guests</span>
+                  <div className="flex flex-col gap-1">
+                    {cartItems.map((item, idx) => (
+                      <span key={idx}>₹{item.pricePerPerson} × {guestCount} guests ({item.menuName})</span>
+                    ))}
+                  </div>
                   <span className="text-white">₹{totalPrice.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="border-t border-white/10 pt-3 flex justify-between items-center">
@@ -134,10 +146,21 @@ const CartSidebar = () => {
         </div>
 
         {/* Footer CTA */}
-        {cartItem && (
+        {cartItems.length > 0 && (
           <div className="p-6 border-t border-white/10 bg-[#111116]">
             <button
-              onClick={() => setShowCheckout(true)}
+              onClick={() => {
+                if (!user) {
+                  navigate('/login', {
+                    state: {
+                      from: location,
+                      message: 'Please log in to proceed to checkout and confirm your booking.',
+                    },
+                  });
+                  return;
+                }
+                setShowCheckout(true);
+              }}
               className="btn-primary w-full py-4 text-sm font-bold shadow-[0_0_20px_rgba(251,191,36,0.2)] flex items-center justify-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

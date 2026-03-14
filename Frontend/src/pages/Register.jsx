@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import faviconUrl from '../assets/favicon.ico';
 
@@ -13,6 +13,9 @@ const Register = () => {
   
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/caterers';
+  const redirectMessage = location.state?.message;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +32,7 @@ const Register = () => {
       setLoading(true);
       setError('');
       await register(name, email, password);
-      navigate('/caterers');
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -40,22 +43,57 @@ const Register = () => {
   return (
     <div className="min-h-screen flex" style={{ background: '#0a0a0f' }}>
       
-      {/* ── Left Side (Form) ── */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 relative order-2 lg:order-1">
+      {/* ── Left Side (Image) ── */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img 
+          src="https://weddingsutra.com/images/Vendor_Images/Catering/gyanjee-caterers/gyanjee-caterers-10.jpg" 
+          alt="Fine dining backdrop"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-amber-500/10 mix-blend-overlay" />
+        
+        <div className="relative z-10 p-12 flex flex-col justify-between h-full w-full">
+          <Link to="/" className="flex items-center gap-2.5 w-max">
+            <img src={faviconUrl} alt="Logo" className="w-8 h-8 rounded-lg shadow-lg" />
+            <span className="font-bold text-white text-[17px] tracking-tight drop-shadow-md">
+              Caterers<span className="text-amber-400">NearMe</span>
+            </span>
+          </Link>
+          
+          <div className="mb-10">
+            <h1 className="text-4xl text-white font-display font-bold leading-tight mb-4 drop-shadow-lg">
+              Discover local<br/>caterers and make<br/>your event special.
+            </h1>
+            <p className="text-gray-300 max-w-sm drop-shadow-md">
+              Sign up today to explore exclusive deals and directly request quotes from top caterers.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Right Side (Form) ── */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-4 py-8 sm:px-8 sm:py-12 relative">
         
         {/* Mobile Logo */}
-        <Link to="/" className="lg:hidden absolute top-8 left-6 sm:left-10 flex items-center gap-2.5">
+        <Link to="/" className="lg:hidden absolute top-5 left-4 sm:top-8 sm:left-8 flex items-center gap-2.5">
           <img src={faviconUrl} alt="Logo" className="w-8 h-8 rounded-lg" />
           <span className="font-bold text-white text-[15px] tracking-tight">
             Caterers<span className="text-amber-400">NearMe</span>
           </span>
         </Link>
         
-        <div className="w-full max-w-md">
-          <div className="mb-10 text-center lg:text-left">
+        <div className="w-full max-w-md pt-10 sm:pt-12">
+          <div className="mb-8 sm:mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Create an account</h2>
             <p className="text-sm text-gray-400">Sign up to compare caterers and request quotes.</p>
           </div>
+
+          {redirectMessage && !error && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-200 text-sm">
+              {redirectMessage}
+            </div>
+          )}
 
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-950/50 border border-red-900/50 text-red-300 text-sm flex items-center gap-3">
@@ -138,42 +176,6 @@ const Register = () => {
         </div>
       </div>
 
-      {/* ── Right Side (Image) ── */}
-      <div className="hidden lg:flex lg:w-1/2 relative order-1 lg:order-2">
-        <img 
-          src="https://images.unsplash.com/photo-1414235077428-338988a2e8c0?w=1200&auto=format&fit=crop&q=80" 
-          alt="Fine Dining" 
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-black/40 to-black/20" />
-        <div className="absolute inset-0 bg-amber-500/10 mix-blend-overlay" />
-        
-        <div className="relative z-10 p-12 flex flex-col justify-between h-full w-full">
-          <div className="flex justify-end w-full">
-            <Link to="/" className="flex items-center gap-2.5 w-max">
-              <span className="font-bold text-white text-[17px] tracking-tight drop-shadow-md">
-                Caterers<span className="text-amber-400">NearMe</span>
-              </span>
-              <img src={faviconUrl} alt="Logo" className="w-8 h-8 rounded-lg shadow-lg" />
-            </Link>
-          </div>
-          
-          <div className="mb-10 text-right">
-             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 mb-4 shadow-xl">
-               {[1,2,3,4,5].map(i => (
-                 <svg key={i} className="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-               ))}
-               <span className="text-xs font-bold text-white ml-1">4.9 / 5.0</span>
-             </div>
-            <h1 className="text-3xl text-white font-display font-medium leading-tight drop-shadow-lg">
-              "We found the best North Indian caterer for our wedding in minutes. Highly recommended!"
-            </h1>
-            <p className="text-amber-400 font-semibold mt-4 drop-shadow-md">
-              — Priya & Rahul
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

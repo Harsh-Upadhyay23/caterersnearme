@@ -8,7 +8,7 @@ import faviconUrl from '../assets/favicon.ico';
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { caterer, logout: catererLogout } = useCatererAuth();
-  const { cartItem, setIsCartOpen } = useCart();
+  const { cartItems, setIsCartOpen } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [catererDropdownOpen, setCatererDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -34,23 +34,26 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/caterers" className="flex items-center gap-2.5 group">
-            <img src={faviconUrl} alt="CaterersNearMe" className="w-8 h-8 rounded-lg" />
-            <span className="font-bold text-white text-[15px] tracking-tight">
+          <Link to="/caterers" className="flex items-center gap-2 group min-w-0">
+            <img src={faviconUrl} alt="CaterersNearMe" className="w-8 h-8 rounded-lg flex-shrink-0" />
+            <span className="hidden sm:inline-block font-bold text-white text-[15px] tracking-tight truncate">
               Caterers<span className="text-amber-400">NearMe</span>
             </span>
           </Link>
 
           {/* Right side actions */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             
             {!user && !caterer && (
-              <Link to="/caterer/register" className="hidden md:block text-xs font-semibold text-amber-500 hover:text-amber-400 mr-2 transition-colors">
+              <Link
+                to="/caterer/register"
+                className="text-[11px] sm:text-xs font-semibold text-amber-500 hover:text-amber-400 px-2 py-1 rounded-full bg-amber-500/5 border border-amber-500/30 transition-colors"
+              >
                 Partner with us
               </Link>
             )}
 
-            {!user && !caterer && <div className="hidden md:block w-px h-4 bg-white/10"></div>}
+            {!user && !caterer && <div className="w-px h-4 bg-white/10 hidden sm:block" />}
 
             {caterer && (
               // Caterer Logged In Dropdown

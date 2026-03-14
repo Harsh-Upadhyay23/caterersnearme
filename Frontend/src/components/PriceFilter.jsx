@@ -9,13 +9,13 @@ const OPTIONS = [
 ];
 
 const PriceFilter = ({ maxPrice, onChange }) => (
-  <div className="flex items-center gap-2 flex-wrap">
-    <span className="section-label whitespace-nowrap">Budget:</span>
+  <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide w-full max-w-full">
+    <span className="section-label whitespace-nowrap shrink-0">Budget:</span>
     {OPTIONS.map((o) => (
       <button
         key={o.value}
         onClick={() => onChange(o.value)}
-        className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150 ${
+        className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150 ${
           maxPrice === o.value
             ? 'bg-amber-500 border-amber-500 text-gray-950 shadow-md shadow-amber-900/30'
             : 'border-white/[0.08] text-gray-500 hover:text-gray-200 hover:border-white/20 hover:bg-white/5'

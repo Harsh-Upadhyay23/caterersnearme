@@ -3,7 +3,7 @@ import { useCart } from '../context/CartContext';
 import api from '../services/api';
 
 const CheckoutModal = ({ onClose }) => {
-  const { cartItem, guestCount, totalPrice, clearCart } = useCart();
+  const { cartItems, guestCount, totalPrice, clearCart } = useCart();
   const [form, setForm] = useState({
     customerName: '',
     customerPhone: '',
@@ -23,15 +23,17 @@ const CheckoutModal = ({ onClose }) => {
     setSubmitting(true);
     setError('');
     try {
-      await api.post('/orders', {
-        ...form,
-        guestCount,
-        catererId: cartItem.catererId,
-        catererName: cartItem.catererName,
-        menuId: cartItem.menuId,
-        menuName: cartItem.menuName,
-        pricePerPerson: cartItem.pricePerPerson,
-      });
+      await Promise.all(cartItems.map(item => 
+        api.post('/orders', {
+          ...form,
+          guestCount,
+          catererId: item.catererId,
+          catererName: item.catererName,
+          menuId: item.menuId,
+          menuName: item.menuName,
+          pricePerPerson: item.pricePerPerson,
+        })
+      ));
       setSuccess(true);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to place order. Please try again.');
@@ -50,7 +52,7 @@ const CheckoutModal = ({ onClose }) => {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-white mb-3">Order Placed! 🎉</h2>
-          <p className="text-gray-400 text-sm mb-2">Your order has been sent to <strong className="text-amber-400">{cartItem.catererName}</strong>.</p>
+          <p className="text-gray-400 text-sm mb-2">Your orders have been sent to the respective caterers.</p>
           <p className="text-gray-400 text-sm mb-8">They will contact you on your provided phone number to confirm the booking.</p>
           <button
             onClick={() => { clearCart(); onClose(); }}
@@ -82,10 +84,14 @@ const CheckoutModal = ({ onClose }) => {
           <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5 mb-8">
             <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-3">Order Summary</p>
             <div className="flex justify-between items-start gap-4">
-              <div>
-                <p className="font-bold text-white">{cartItem.menuName}</p>
-                <p className="text-sm text-gray-400">{cartItem.catererName}</p>
-                <p className="text-sm text-gray-400 mt-1">{guestCount} guests × ₹{cartItem.pricePerPerson}/person</p>
+              <div className="space-y-4">
+                {cartItems.map((item, idx) => (
+                  <div key={idx}>
+                    <p className="font-bold text-white">{item.menuName}</p>
+                    <p className="text-sm text-gray-400">{item.catererName}</p>
+                    <p className="text-sm text-gray-400 mt-1">{guestCount} guests × ₹{item.pricePerPerson}/person</p>
+                  </div>
+                ))}
               </div>
               <div className="text-right shrink-0">
                 <p className="text-2xl font-bold text-amber-400">₹{totalPrice.toLocaleString('en-IN')}</p>

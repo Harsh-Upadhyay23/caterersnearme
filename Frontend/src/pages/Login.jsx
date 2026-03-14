@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import faviconUrl from '../assets/favicon.ico';
 
@@ -11,6 +11,9 @@ const Login = () => {
   
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/caterers';
+  const redirectMessage = location.state?.message;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +26,7 @@ const Login = () => {
       setLoading(true);
       setError('');
       await login(email, password);
-      navigate('/caterers');
+      navigate(from, { replace: true });
     } catch (err) {
       setError('Invalid email or password');
     } finally {
@@ -64,21 +67,27 @@ const Login = () => {
       </div>
 
       {/* ── Right Side (Form) ── */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 relative">
+      <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-4 py-8 sm:px-8 sm:py-12 relative">
         
         {/* Mobile Logo */}
-        <Link to="/" className="lg:hidden absolute top-8 left-6 sm:left-10 flex items-center gap-2.5">
+        <Link to="/" className="lg:hidden absolute top-5 left-4 sm:top-8 sm:left-8 flex items-center gap-2.5">
           <img src={faviconUrl} alt="Logo" className="w-8 h-8 rounded-lg" />
           <span className="font-bold text-white text-[15px] tracking-tight">
             Caterers<span className="text-amber-400">NearMe</span>
           </span>
         </Link>
         
-        <div className="w-full max-w-md">
-          <div className="mb-10 text-center lg:text-left">
+        <div className="w-full max-w-md pt-10 sm:pt-12">
+          <div className="mb-8 sm:mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome back</h2>
             <p className="text-sm text-gray-400">Please enter your details to sign in.</p>
           </div>
+
+          {redirectMessage && !error && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-200 text-sm">
+              {redirectMessage}
+            </div>
+          )}
 
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-950/50 border border-red-900/50 text-red-300 text-sm flex items-center gap-3">
