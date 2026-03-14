@@ -18,12 +18,37 @@ export const fetchCaterers = async () => {
 };
 
 /**
+ * Search caterers by any query (name, city, area, cuisine, dishes, etc.) + optional maxPrice
+ * @param {string} q - search term
+ * @param {number|null} maxPrice
+ * @returns {Promise<Array>}
+ */
+export const searchCaterers = async (q = '', maxPrice = null) => {
+  const params = {};
+  if (q && q.trim()) params.q = q.trim();
+  if (maxPrice !== null && maxPrice !== Infinity) params.maxPrice = maxPrice;
+  const { data } = await api.get('/caterers/search', { params });
+  return data.data;
+};
+
+
+/**
  * Fetch a single caterer by ID
  * @param {string} id
  * @returns {Promise<Object>}
  */
 export const fetchCatererById = async (id) => {
   const { data } = await api.get(`/caterers/${id}`);
+  return data.data;
+};
+
+/**
+ * Fetch menus for a specific caterer
+ * @param {string} catererId
+ * @returns {Promise<Array>}
+ */
+export const fetchMenusByCaterer = async (catererId) => {
+  const { data } = await api.get(`/menus/caterer/${catererId}`);
   return data.data;
 };
 

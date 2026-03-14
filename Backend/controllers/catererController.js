@@ -159,56 +159,49 @@ const updateCatererProfile = async (req, res, next) => {
 const Menu = require('../models/Menu');
 
 // @desc    Advanced Search Caterers
-// @route   GET /api/caterers/search
+// @route   GET /api/caterers/search?q=&maxPrice=
 // @access  Public
 const searchCaterers = async (req, res, next) => {
   try {
-    const { q, area, cuisine } = req.query;
-    
-    // Build query for Caterer model
+    const { q, maxPrice } = req.query;
+
     let catererQuery = {};
-    
-    if (area) {
-      catererQuery.$or = [
-        { location: { $regex: area, $options: 'i' } },
-        { city: { $regex: area, $options: 'i' } },
-        { areasServed: { $regex: area, $options: 'i' } }
-      ];
-    }
-    
-    if (cuisine) {
-      catererQuery.cuisines = { $regex: cuisine, $options: 'i' };
-    }
-    
-    let matchedCatererIds = new Set();
-    let hasDishMatch = false;
 
-    if (q) {
-      // 1. Search Caterer fields (Name, description)
-      const caterersMatch = await Caterer.find({
+    // ── Price filter ────────────────────────────────────────────────────────
+    if (maxPrice && !isNaN(Number(maxPrice))) {
+      catererQuery.pricePerPlate = { $lte: Number(maxPrice) };
+    }
+
+    if (q && q.trim()) {
+      const term = q.trim();
+
+      // 1. Search across all caterer fields in parallel
+      const catererFields = await Caterer.find({
         $or: [
-          { name: { $regex: q, $options: 'i' } },
-          { description: { $regex: q, $options: 'i' } }
-        ]
+          { name:        { $regex: term, $options: 'i' } },
+          { description: { $regex: term, $options: 'i' } },
+          { city:        { $regex: term, $options: 'i' } },
+          { location:    { $regex: term, $options: 'i' } },
+          { areasServed: { $elemMatch: { $regex: term, $options: 'i' } } },
+          { cuisines:    { $elemMatch: { $regex: term, $options: 'i' } } },
+          { services:    { $elemMatch: { $regex: term, $options: 'i' } } },
+        ],
       }).select('_id');
-      
-      caterersMatch.forEach(c => matchedCatererIds.add(c._id.toString()));
 
-      // 2. Search Menu fields (Dishes, Menu Name)
+      const matchedIds = new Set(catererFields.map(c => c._id.toString()));
+
+      // 2. Also search menus (dish names, menu names) to find caterers via food items
       const menusMatch = await Menu.find({
         $or: [
-          { menuName: { $regex: q, $options: 'i' } },
-          { dishes: { $regex: q, $options: 'i' } }
-        ]
+          { menuName: { $regex: term, $options: 'i' } },
+          { dishes:   { $regex: term, $options: 'i' } },
+        ],
       }).select('catererId');
 
-      menusMatch.forEach(m => {
-        matchedCatererIds.add(m.catererId.toString());
-        hasDishMatch = true;
-      });
+      menusMatch.forEach(m => matchedIds.add(m.catererId.toString()));
 
-      // If a query was provided, restrict the caterer query to ONLY those that matched either Name, Desc, or Menu
-      catererQuery._id = { $in: Array.from(matchedCatererIds) };
+      // Combine with any other active filters (e.g. maxPrice)
+      catererQuery._id = { $in: Array.from(matchedIds) };
     }
 
     const caterers = await Caterer.find(catererQuery).sort({ rating: -1, createdAt: -1 });
@@ -217,14 +210,12 @@ const searchCaterers = async (req, res, next) => {
       success: true,
       count: caterers.length,
       data: caterers,
-      metadata: {
-        dishMatchFound: hasDishMatch
-      }
     });
 
   } catch (error) {
     next(error);
   }
 };
+
 
 module.exports = { getAllCaterers, getCatererById, getCatererBySlug, createCaterer, updateCatererProfile, searchCaterers };

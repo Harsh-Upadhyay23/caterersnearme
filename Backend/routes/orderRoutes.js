@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { createOrder, getOrdersForCaterer, updateOrderStatus } = require('../controllers/orderController');
-const { protectCaterer } = require('../middleware/authMiddleware');
+const { protect, protectCaterer } = require('../middleware/authMiddleware');
 
-// Public: Place an Order
-router.post('/', createOrder);
+// Protected: Place an Order (logged-in users only)
+router.post('/', protect, createOrder);
 
 // Protected: Caterer Views Incoming Orders
 router.get('/caterer', protectCaterer, getOrdersForCaterer);
