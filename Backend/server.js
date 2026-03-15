@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "caterersnearme-alpha.vercel.app"
+      "https://caterersnearme-alpha.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "x-auth-token", "x-caterer-token"],
