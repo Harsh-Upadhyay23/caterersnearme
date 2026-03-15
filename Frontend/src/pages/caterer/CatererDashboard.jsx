@@ -74,20 +74,20 @@ const CatererDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8" style={{ background: '#0a0a0f' }}>
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-white/10 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-gray-200 gap-4">
           <div>
-            <h1 className="text-3xl font-display font-medium text-white mb-2">Partner Dashboard</h1>
-            <p className="text-gray-400">Welcome back, <span className="text-amber-400 font-semibold">{caterer?.name}</span></p>
+            <h1 className="text-3xl font-display font-bold text-gray-900 mb-2">Partner Dashboard</h1>
+            <p className="text-gray-600">Welcome back, <span className="text-amber-600 font-semibold">{caterer?.name}</span></p>
           </div>
           <div className="flex items-center gap-4">
-            <a href={`/caterer/${caterer?.slug}`} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm hover:bg-white/10 transition-colors">
+            <a href={`/caterer/${caterer?.slug}`} target="_blank" rel="noreferrer" className="px-4 py-2 rounded-lg bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors shadow-sm">
               View Public Profile
             </a>
-            <button onClick={logout} className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 text-sm hover:bg-red-500/20 transition-colors">
+            <button onClick={logout} className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-sm hover:bg-red-100 transition-colors font-medium shadow-sm">
               Logout
             </button>
           </div>
@@ -107,8 +107,8 @@ const CatererDashboard = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${
                   activeTab === tab.id 
-                    ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20 font-medium' 
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                    ? 'bg-amber-50 text-amber-600 border border-amber-200 font-semibold shadow-sm' 
+                    : 'text-gray-600 hover:bg-white hover:text-gray-900 border border-transparent shadow-sm'
                 }`}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -121,15 +121,15 @@ const CatererDashboard = () => {
 
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            <div className="bg-[#111116] border border-white/5 rounded-2xl p-6 sm:p-8">
+            <div className="bg-white border border-gray-200 shadow-sm rounded-2xl p-6 sm:p-8">
               
               {/* === PROFILE TAB === */}
               {activeTab === 'profile' && (
                 <div>
-                  <h2 className="text-xl font-medium text-white mb-6">Business Details</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-6">Business Details</h2>
                   
                   {message && (
-                    <div className={`mb-6 p-4 rounded-xl text-sm flex items-center gap-3 ${message.includes('success') ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
+                    <div className={`mb-6 p-4 rounded-xl text-sm flex items-center gap-3 ${message.includes('success') ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
                       {message}
                     </div>
                   )}
@@ -137,68 +137,68 @@ const CatererDashboard = () => {
                   <form onSubmit={handleProfileSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Business Name</label>
-                        <input type="text" name="name" value={profileData.name} onChange={handleProfileChange} className="input-field" required />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Business Name</label>
+                        <input type="text" name="name" value={profileData.name} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" required />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Established Year</label>
-                        <input type="number" name="establishedYear" value={profileData.establishedYear} onChange={handleProfileChange} className="input-field" placeholder="e.g. 2010" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Established Year</label>
+                        <input type="number" name="establishedYear" value={profileData.establishedYear} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="e.g. 2010" />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Contact Phone</label>
-                        <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} className="input-field" required />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Contact Phone</label>
+                        <input type="tel" name="phone" value={profileData.phone} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" required />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Price Per Plate (₹)</label>
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Price Per Plate (₹)</label>
                         <div className="relative">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-sm pointer-events-none select-none">₹</span>
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-600 font-bold text-sm pointer-events-none select-none">₹</span>
                           <input
                             type="number"
                             name="pricePerPlate"
                             value={profileData.pricePerPlate}
                             onChange={handleProfileChange}
-                            className="input-field pl-8"
+                            className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
                             placeholder="e.g. 450"
                             min="1"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Location (General)</label>
-                        <input type="text" name="location" value={profileData.location} onChange={handleProfileChange} className="input-field" placeholder="e.g. Andheri West" required />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Location (General)</label>
+                        <input type="text" name="location" value={profileData.location} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="e.g. Andheri West" required />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">City</label>
-                        <input type="text" name="city" value={profileData.city} onChange={handleProfileChange} className="input-field" placeholder="e.g. Mumbai" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">City</label>
+                        <input type="text" name="city" value={profileData.city} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="e.g. Mumbai" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Full Address</label>
-                        <input type="text" name="address" value={profileData.address} onChange={handleProfileChange} className="input-field" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Full Address</label>
+                        <input type="text" name="address" value={profileData.address} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">About Business</label>
-                        <textarea name="description" value={profileData.description} onChange={handleProfileChange} rows="4" className="input-field resize-none" placeholder="Describe your experience, quality standards, etc."></textarea>
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">About Business</label>
+                        <textarea name="description" value={profileData.description} onChange={handleProfileChange} rows="4" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all resize-none" placeholder="Describe your experience, quality standards, etc."></textarea>
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Cuisines Offered (Comma separated)</label>
-                        <input type="text" name="cuisines" value={profileData.cuisines} onChange={handleProfileChange} className="input-field" placeholder="North Indian, Maharashtrian, Chinese" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Cuisines Offered (Comma separated)</label>
+                        <input type="text" name="cuisines" value={profileData.cuisines} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="North Indian, Maharashtrian, Chinese" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Services (Comma separated)</label>
-                        <input type="text" name="services" value={profileData.services} onChange={handleProfileChange} className="input-field" placeholder="Veg, Non-Veg, Jain Food, Corporate Events" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Services (Comma separated)</label>
+                        <input type="text" name="services" value={profileData.services} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="Veg, Non-Veg, Jain Food, Corporate Events" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs font-semibold text-gray-400 mb-2 uppercase">Areas Served (Comma separated)</label>
-                        <input type="text" name="areasServed" value={profileData.areasServed} onChange={handleProfileChange} className="input-field" placeholder="Andheri, Bandra, Juhu" />
+                        <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">Areas Served (Comma separated)</label>
+                        <input type="text" name="areasServed" value={profileData.areasServed} onChange={handleProfileChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all" placeholder="Andheri, Bandra, Juhu" />
                       </div>
                     </div>
                     
-                    <div className="flex justify-end items-center gap-4 pt-4 border-t border-white/5">
+                    <div className="flex justify-end items-center gap-4 pt-4 border-t border-gray-200">
                       {profileSaved && (
                         <button
                           type="button"
                           onClick={() => setActiveTab('images')}
-                          className="flex items-center gap-2 px-8 py-2.5 bg-amber-400 hover:bg-amber-300 text-gray-950 font-bold rounded-xl transition-all duration-200 shadow-[0_0_20px_rgba(251,191,36,0.3)] hover:shadow-[0_0_28px_rgba(251,191,36,0.45)] hover:scale-105 active:scale-95"
+                          className="flex items-center gap-2 px-8 py-2.5 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
                           Next — Upload Images
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -206,7 +206,7 @@ const CatererDashboard = () => {
                           </svg>
                         </button>
                       )}
-                      <button type="submit" disabled={isUpdating} className="btn-primary px-8 py-2.5">
+                      <button type="submit" disabled={isUpdating} className="px-8 py-2.5 bg-gray-900 hover:bg-black text-white font-medium rounded-xl transition-all shadow-md">
                         {isUpdating ? 'Saving...' : 'Save Profile'}
                       </button>
                     </div>

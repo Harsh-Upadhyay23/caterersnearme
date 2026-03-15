@@ -10,7 +10,7 @@ export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [guestCount, setGuestCount] = useState(100);
 
-  const addToCart = (menu, caterer) => {
+  const addToCart = (menu, caterer, openCart = true) => {
     if (!cartItems.some(item => item.menuId === menu.id)) {
       setCartItems(prev => [...prev, {
         menuId: menu.id,
@@ -23,7 +23,9 @@ export const CartProvider = ({ children }) => {
         catererName: caterer.name,
       }]);
     }
-    setIsCartOpen(true);
+    if (openCart) {
+      setIsCartOpen(true);
+    }
   };
 
   const removeCartItem = (menuId) => {
