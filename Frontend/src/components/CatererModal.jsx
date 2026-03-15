@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { fetchMenusByCaterer } from '../services/api';
+import Loader from './Loader';
 
 const StarRating = ({ rating }) => (
   <div className="flex items-center gap-1">
@@ -139,7 +140,7 @@ const CatererModal = ({ caterer, onClose }) => {
               
               {loadingMenus ? (
                 <div className="flex justify-center py-4">
-                  <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+                  <Loader className="w-6 h-6" />
                 </div>
               ) : errorMenus ? (
                 <p className="text-sm text-red-400 bg-red-500/10 p-3 rounded-lg border border-red-500/20">{errorMenus}</p>

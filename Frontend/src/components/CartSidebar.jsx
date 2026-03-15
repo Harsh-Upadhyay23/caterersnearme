@@ -21,20 +21,19 @@ const CartSidebar = () => {
       />
 
       {/* Sidebar */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-[420px] z-50 bg-[#0e0e14] border-l border-white/10 shadow-2xl flex flex-col animate-slide-in-right overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#111116]">
+      <div className="fixed right-0 top-0 h-full w-full max-w-[420px] z-50 bg-white border-l border-gray-200 shadow-xl flex flex-col animate-slide-in-right overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-amber-400/10 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
-            <h2 className="text-base font-bold text-white">Your Cart</h2>
+            <h2 className="text-base font-bold text-gray-900">Your Cart</h2>
           </div>
           <button
             onClick={() => setIsCartOpen(false)}
-            className="w-8 h-8 rounded-full hover:bg-white/10 text-gray-400 flex items-center justify-center"
+            className="w-8 h-8 rounded-full hover:bg-gray-200 text-gray-500 flex items-center justify-center"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -46,26 +45,26 @@ const CartSidebar = () => {
         <div className="flex-1 overflow-y-auto p-6">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-20">
-              <div className="w-20 h-20 bg-white/[0.03] rounded-full flex items-center justify-center mb-4 border border-white/5">
-                <svg className="w-9 h-9 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4 border border-gray-200">
+                <svg className="w-9 h-9 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <p className="text-gray-400 font-medium">Your cart is empty</p>
-              <p className="text-gray-600 text-sm mt-1">Select a menu package from a caterer</p>
+              <p className="text-gray-600 font-medium">Your cart is empty</p>
+              <p className="text-gray-500 text-sm mt-1">Select a menu package from a caterer</p>
             </div>
           ) : (
             <div className="space-y-6">
               {/* Selected Menu Cards */}
               <div className="space-y-4">
                 {cartItems.map((item) => (
-                  <div key={item.menuId} className="bg-[#111116] border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden">
+                  <div key={item.menuId} className="bg-gray-50 border border-amber-500/20 rounded-2xl p-5 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-3xl pointer-events-none" />
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div>
-                        <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-1">{item.catererName}</p>
-                        <h3 className="text-lg font-bold text-white">{item.menuName}</h3>
-                        {item.description && <p className="text-xs text-gray-400 mt-1">{item.description}</p>}
+                        <p className="text-xs font-bold text-amber-600 uppercase tracking-widest mb-1">{item.catererName}</p>
+                        <h3 className="text-lg font-bold text-gray-900">{item.menuName}</h3>
+                        {item.description && <p className="text-xs text-gray-600 mt-1">{item.description}</p>}
                       </div>
                       <span className={`shrink-0 mt-1 px-2 py-0.5 rounded text-[10px] font-bold ${
                         item.type === 'Veg' ? 'bg-green-500/10 text-green-400' :
@@ -80,7 +79,7 @@ const CartSidebar = () => {
                         <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wide mb-2">Includes</p>
                         <div className="flex flex-wrap gap-1">
                           {item.dishes.slice(0, 6).map((d, i) => (
-                            <span key={i} className="text-[11px] text-gray-400 bg-white/[0.03] border border-white/[0.05] px-2 py-0.5 rounded">{d}</span>
+                            <span key={i} className="text-[11px] text-gray-600 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded">{d}</span>
                           ))}
                           {item.dishes.length > 6 && (
                             <span className="text-[11px] text-amber-500 font-semibold">+{item.dishes.length - 6} more</span>
@@ -89,8 +88,8 @@ const CartSidebar = () => {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                      <p className="text-sm text-gray-400">₹{item.pricePerPerson.toLocaleString('en-IN')}<span className="text-xs text-gray-600">/person</span></p>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                      <p className="text-sm text-gray-600">₹{item.pricePerPerson.toLocaleString('en-IN')}<span className="text-xs text-gray-500">/person</span></p>
                       <button onClick={() => removeCartItem(item.menuId)} className="text-xs text-red-400 hover:text-red-300 transition-colors flex items-center gap-1">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                         Remove
@@ -101,20 +100,20 @@ const CartSidebar = () => {
               </div>
 
               {/* Guest Count */}
-              <div className="bg-[#111116] border border-white/10 rounded-2xl p-5">
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Number of Guests</label>
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => setGuestCount(g => Math.max(10, g - 10))}
-                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-white flex items-center justify-center text-lg font-bold transition-all"
+                    className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-amber-500/10 border border-gray-200 hover:border-amber-500/30 text-gray-900 flex items-center justify-center text-lg font-bold transition-all"
                   >−</button>
                   <div className="text-center">
-                    <span className="text-4xl font-bold text-white">{guestCount}</span>
-                    <p className="text-xs text-gray-600 mt-1">guests</p>
+                    <span className="text-4xl font-bold text-gray-900">{guestCount}</span>
+                    <p className="text-xs text-gray-500 mt-1">guests</p>
                   </div>
                   <button
                     onClick={() => setGuestCount(g => g + 10)}
-                    className="w-10 h-10 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-white flex items-center justify-center text-lg font-bold transition-all"
+                    className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-amber-500/10 border border-gray-200 hover:border-amber-500/30 text-gray-900 flex items-center justify-center text-lg font-bold transition-all"
                   >+</button>
                 </div>
                 <input
@@ -126,19 +125,19 @@ const CartSidebar = () => {
               </div>
 
               {/* Price Breakdown */}
-              <div className="bg-[#111116] border border-white/10 rounded-2xl p-5 space-y-3">
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 space-y-3">
                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Price Breakdown</p>
-                <div className="flex justify-between text-sm text-gray-400">
+                <div className="flex justify-between text-sm text-gray-600">
                   <div className="flex flex-col gap-1">
                     {cartItems.map((item, idx) => (
                       <span key={idx}>₹{item.pricePerPerson} × {guestCount} guests ({item.menuName})</span>
                     ))}
                   </div>
-                  <span className="text-white">₹{totalPrice.toLocaleString('en-IN')}</span>
+                  <span className="text-gray-900">₹{totalPrice.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="border-t border-white/10 pt-3 flex justify-between items-center">
-                  <span className="font-bold text-white">Total</span>
-                  <span className="text-2xl font-bold text-amber-400">₹{totalPrice.toLocaleString('en-IN')}</span>
+                <div className="border-t border-gray-200 pt-3 flex justify-between items-center">
+                  <span className="font-bold text-gray-900">Total</span>
+                  <span className="text-2xl font-bold text-amber-600">₹{totalPrice.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
@@ -147,7 +146,7 @@ const CartSidebar = () => {
 
         {/* Footer CTA */}
         {cartItems.length > 0 && (
-          <div className="p-6 border-t border-white/10 bg-[#111116]">
+          <div className="p-6 border-t border-gray-200 bg-gray-50">
             <button
               onClick={() => {
                 if (!user) {

@@ -217,10 +217,9 @@ const CatererDashboard = () => {
               {/* === IMAGES TAB === */}
               {activeTab === 'images' && (
                 <ImageUploader 
-                  currentImages={caterer.images || []} 
-                  onUploadSuccess={(newImages) => {
-                    // Update the local context state or let the context's updateProfile handle it
-                  }} 
+                  currentImages={caterer.images || []}
+                  currentThumbnail={caterer.image}
+                  onUploadSuccess={() => {}}
                 />
               )}
 

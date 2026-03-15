@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useCatererAuth } from '../context/CatererAuthContext';
+import Loader from './Loader';
 
 const ProtectedCatererRoute = ({ children }) => {
   const { isAuthenticated, loading } = useCatererAuth();
@@ -8,7 +9,7 @@ const ProtectedCatererRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#0a0a0f' }}>
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-400"></div>
+        <Loader className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32" />
       </div>
     );
   }

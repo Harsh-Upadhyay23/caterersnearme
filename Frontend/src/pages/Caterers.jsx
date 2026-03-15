@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { fetchCaterers, searchCaterers } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
+import Loader from '../components/Loader';
 import CatererCard from '../components/CatererCard';
 import CatererModal from '../components/CatererModal';
 import PriceFilter from '../components/PriceFilter';
@@ -14,38 +17,38 @@ const QUICK_FILTERS = [
 const Skeleton = () => (
   <div className="rounded-xl glass p-5 animate-pulse flex flex-col gap-4">
     <div className="flex items-start gap-3">
-      <div className="w-11 h-11 rounded-lg bg-white/[0.06]" />
+      <div className="w-11 h-11 rounded-lg bg-gray-200 bg-gray-200" />
       <div className="flex-1 space-y-2">
-        <div className="h-4 rounded bg-white/[0.06] w-3/4" />
-        <div className="h-3 rounded bg-white/[0.06] w-1/2" />
+        <div className="h-4 rounded bg-gray-200 bg-gray-200 w-3/4" />
+        <div className="h-3 rounded bg-gray-200 bg-gray-200 w-1/2" />
       </div>
     </div>
-    <div className="h-px bg-white/[0.04]" />
+    <div className="h-px bg-gray-200 bg-gray-100" />
     <div className="flex justify-between">
-      <div className="h-3 rounded bg-white/[0.06] w-24" />
-      <div className="h-4 rounded bg-white/[0.06] w-16" />
+      <div className="h-3 rounded bg-gray-200 bg-gray-200 w-24" />
+      <div className="h-4 rounded bg-gray-200 bg-gray-200 w-16" />
     </div>
     <div className="flex gap-1.5">
-      <div className="h-5 w-16 rounded-md bg-white/[0.06]" />
-      <div className="h-5 w-20 rounded-md bg-white/[0.06]" />
+      <div className="h-5 w-16 rounded-md bg-gray-200 bg-gray-200" />
+      <div className="h-5 w-20 rounded-md bg-gray-200 bg-gray-200" />
     </div>
-    <div className="h-9 mt-auto rounded-lg bg-white/[0.04]" />
+    <div className="h-9 mt-auto rounded-lg bg-gray-100 bg-gray-100" />
   </div>
 );
 
 // ─── Caterers Page ────────────────────────────────────────────────────────────
 const Caterers = () => {
-  const [allCaterers, setAllCaterers]   = useState([]);
-  const [results, setResults]           = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [searching, setSearching]       = useState(false);
-  const [error, setError]               = useState(null);
-  const [search, setSearch]             = useState('');
-  const [maxPrice, setMaxPrice]         = useState(Infinity);
-  const [activeChip, setActiveChip]     = useState(null);
-  const [selected, setSelected]         = useState(null);
-  const [page, setPage]                 = useState(1);
-  const PAGE_SIZE                       = 8;
+  const [allCaterers, setAllCaterers] = useState([]);
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+  const [maxPrice, setMaxPrice] = useState(Infinity);
+  const [activeChip, setActiveChip] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 8;
 
   const debounceRef = useRef(null);
 
@@ -117,7 +120,7 @@ const Caterers = () => {
   };
 
   const hasFilters = search || maxPrice !== Infinity || activeChip;
-  const isLoading  = loading || searching;
+  const isLoading = loading || searching;
 
   const totalResults = results.length;
   const totalPages = useMemo(
@@ -162,26 +165,44 @@ const Caterers = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: '#0a0a0f' }}>
+    <div className="min-h-screen flex flex-col bg-gray-50 transition-colors">
 
-      {/* ── Hero ── */}
-      <section className="relative px-4 sm:px-6 lg:px-8 pt-14 pb-12 border-b border-white/[0.05] overflow-hidden">
-        {/* subtle grid pattern */}
+      {/* Hero */}
+      <section className="relative px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pb-20 lg:pb-24 bg-white overflow-hidden">
+        
+        {/* Top Decorative Amber Wave */}
+        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none pointer-events-none">
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            viewBox="0 0 1440 320" 
+            className="block w-full h-[60px] sm:h-[80px] lg:h-[120px]" 
+            preserveAspectRatio="none"
+          >
+            <path 
+              fill="currentColor" 
+              className="text-amber-500" 
+              fillOpacity="1" 
+              d="M0,224L48,229.3C96,235,192,245,288,250.7C384,256,480,256,576,250.7C672,245,768,235,864,208C960,181,1056,139,1152,117.3C1248,96,1344,96,1392,96L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+            ></path>
+          </svg>
+        </div>
+
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px)', backgroundSize: '40px 40px' }}
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.08) 1px,transparent 1px)', backgroundSize: '40px 40px' }}
         />
-        {/* amber glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-40 bg-amber-500/10 blur-[80px] pointer-events-none" />
 
-        <div className="relative max-w-3xl mx-auto text-center">
-          <p className="section-label mb-4">🍽 &nbsp;Professional Catering Services</p>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-[1.15]">
+        <div className="relative max-w-3xl mx-auto text-center z-10 mt-8">
+          <p className="inline-block bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 text-amber-600 text-[11px] font-bold tracking-widest uppercase mb-4 sm:mb-6 shadow-sm">
+            🍽 &nbsp;Professional Catering Services
+          </p>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 leading-[1.15]">
             Find the Right Caterer<br />
-            <span className="text-amber-400">for Every Occasion</span>
+            <span className="text-amber-500">for Every Occasion</span>
           </h1>
-          <p className="text-gray-400 text-base max-w-xl mx-auto leading-relaxed">
-            Search by name, city, area, cuisine, or even a specific dish — then get a personalised quote in minutes.
+          <p className="text-gray-600 text-base max-w-xl mx-auto leading-relaxed">
+            Search by name, city, area, cuisine, or even a specific dish then get a personalised quote in minutes.
           </p>
         </div>
       </section>
@@ -195,12 +216,9 @@ const Caterers = () => {
           <div className="relative w-full">
             <div className="absolute inset-y-0 left-4 sm:left-5 flex items-center pointer-events-none">
               {searching ? (
-                <svg className="animate-spin w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+                <Loader className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500">
                   <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
                 </svg>
               )}
@@ -233,11 +251,10 @@ const Caterers = () => {
             <button
               key={chip}
               onClick={() => handleChip(chip)}
-              className={`shrink-0 snap-start px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150 ${
-                activeChip === chip
+              className={`shrink-0 snap-start px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-150 ${activeChip === chip
                   ? 'bg-amber-400 text-gray-950 border-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.35)]'
-                  : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white'
-              }`}
+                  : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200 hover:text-gray-900'
+                }`}
             >
               {chip}
             </button>
@@ -256,7 +273,7 @@ const Caterers = () => {
         {!isLoading && !error && (
           <div className="flex items-center justify-between mb-5">
             <p className="text-xs text-gray-600">
-              <span className="text-white font-semibold">
+              <span className="text-gray-900 font-semibold">
                 {totalResults}
               </span>
               {hasFilters
@@ -276,10 +293,10 @@ const Caterers = () => {
 
         {/* Error */}
         {error && (
-          <div className="rounded-xl border border-red-900/50 bg-red-950/30 px-6 py-10 text-center max-w-md mx-auto">
+          <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-10 text-center max-w-md mx-auto">
             <p className="text-2xl mb-3">⚠️</p>
-            <p className="text-sm font-semibold text-red-300 mb-1">Connection failed</p>
-            <p className="text-xs text-red-400/70 mb-5">{error}</p>
+            <p className="text-sm font-semibold text-red-700 mb-1">Connection failed</p>
+            <p className="text-xs text-red-600 mb-5">{error}</p>
             <button onClick={() => window.location.reload()} className="btn-primary text-xs">
               Retry
             </button>
@@ -293,25 +310,25 @@ const Caterers = () => {
               {isLoading
                 ? Array.from({ length: PAGE_SIZE }).map((_, i) => <Skeleton key={i} />)
                 : totalResults === 0
-                ? (
-                  <div className="col-span-full py-20 text-center">
-                    <p className="text-3xl mb-3">🔍</p>
-                    <p className="text-sm font-semibold text-gray-400 mb-1">No results found</p>
-                    <p className="text-xs text-gray-600 max-w-xs mx-auto">
-                      {search
-                        ? `No caterers matching "${search}" — try city, cuisine, or a dish name`
-                        : activeChip
-                        ? `No caterers found for "${activeChip}"`
-                        : 'No caterers within your budget'}
-                    </p>
-                    {hasFilters && (
-                      <button onClick={clearFilters} className="mt-4 btn-ghost text-xs">
-                        Clear filters
-                      </button>
-                    )}
-                  </div>
-                )
-                : paginatedResults.map((c) => (
+                  ? (
+                    <div className="col-span-full py-20 text-center">
+                      <p className="text-3xl mb-3">🔍</p>
+                      <p className="text-sm font-semibold text-gray-500 mb-1">No results found</p>
+                      <p className="text-xs text-gray-600 max-w-xs mx-auto">
+                        {search
+                          ? `No caterers matching "${search}" — try city, cuisine, or a dish name`
+                          : activeChip
+                            ? `No caterers found for "${activeChip}"`
+                            : 'No caterers within your budget'}
+                      </p>
+                      {hasFilters && (
+                        <button onClick={clearFilters} className="mt-4 btn-ghost text-xs">
+                          Clear filters
+                        </button>
+                      )}
+                    </div>
+                  )
+                  : paginatedResults.map((c) => (
                     <CatererCard
                       key={c.id || c._id}
                       caterer={c}
@@ -328,7 +345,7 @@ const Caterers = () => {
                   type="button"
                   onClick={() => goToPage(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold border border-white/10 text-gray-300 hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-3 py-1.5 rounded-full text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Prev
                 </button>
@@ -338,11 +355,10 @@ const Caterers = () => {
                     key={p}
                     type="button"
                     onClick={() => goToPage(p)}
-                    className={`w-8 h-8 rounded-full text-xs font-semibold flex items-center justify-center transition-all ${
-                      p === currentPage
+                    className={`w-8 h-8 rounded-full text-xs font-semibold flex items-center justify-center transition-all ${p === currentPage
                         ? 'bg-amber-400 text-gray-950 shadow-[0_0_12px_rgba(251,191,36,0.4)]'
-                        : 'bg-white/5 text-gray-300 border border-white/10 hover:bg-white/10'
-                    }`}
+                        : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200'
+                      }`}
                   >
                     {p}
                   </button>
@@ -352,7 +368,7 @@ const Caterers = () => {
                   type="button"
                   onClick={() => goToPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold border border-white/10 text-gray-300 hover:bg-white/5 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-3 py-1.5 rounded-full text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
@@ -362,14 +378,29 @@ const Caterers = () => {
         )}
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-white/[0.05] py-6 mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-700">© 2026 CaterersNearMe. All rights reserved.</p>
-          <div className="flex items-center gap-4 text-xs text-gray-700">
-            <a href="#" className="hover:text-gray-400 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Terms</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Contact</a>
+      {/* Footer Top Wave */}
+      <div className="w-full overflow-hidden leading-none pointer-events-none -mb-1 relative z-10 rotate-180 mt-auto">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 1440 320" 
+          className="block w-full h-[60px] sm:h-[100px] lg:h-[140px]" 
+          preserveAspectRatio="none"
+        >
+          <path 
+            fill="currentColor" 
+            className="text-amber-500" 
+            fillOpacity="1" 
+            d="M0,224L48,229.3C96,235,192,245,288,250.7C384,256,480,256,576,250.7C672,245,768,235,864,208C960,181,1056,139,1152,117.3C1248,96,1344,96,1392,96L1440,96L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+          ></path>
+        </svg>
+      </div>
+      <footer className="pt-2 pb-8 bg-amber-500 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-950 font-medium">
+          <p className="text-xs">© 2026 CaterersNearMe. All rights reserved.</p>
+          <div className="flex items-center gap-4 text-xs font-bold">
+            <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">Contact</a>
           </div>
         </div>
       </footer>

@@ -12,87 +12,93 @@ const CatererCard = ({ caterer, onViewDetails }) => {
   } = caterer;
 
   return (
-    <article className="group relative flex flex-col bg-[#0c0c11] rounded-[20px] overflow-hidden border border-white/[0.04] hover:border-amber-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1.5 flex-1">
+    <article className="group relative flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-[0_2px_10px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-400 ease-out flex-1">
       
-      {/* ── Gorgeous Image Header ── */}
-      <div className="relative h-60 w-full overflow-hidden bg-gray-900 border-b border-white/[0.02]">
+      {/* Image Section */}
+      <div className="relative h-56 w-full overflow-hidden bg-gray-50 flex-shrink-0">
         <img 
           src={image} 
           alt={name} 
-          className="w-full h-full object-cover group-hover:scale-105 group-hover:rotate-1 transition-all duration-700 ease-out opacity-90 group-hover:opacity-100"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
           loading="lazy"
         />
-        {/* Soft gradient to blend the image into the card body */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0c11] via-[#0c0c11]/50 to-transparent" />
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+        
+        {/* Subtle top gradient for tag readability */}
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/40 to-transparent" />
         
         {/* Rating Pill overlay */}
         {rating > 0 && (
-          <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md border border-white/10 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-xl">
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-amber-400">
+          <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm border border-black/5">
+            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-amber-500">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
-            <span className="text-sm font-bold text-white tracking-wide">{rating.toFixed(1)}</span>
+            <span className="text-xs font-bold text-gray-900">{rating.toFixed(1)}</span>
           </div>
         )}
         
-        {/* Highlight Cuisine Tag Top Left */}
+        {/* Showcase Cuisine Tag Top Left */}
         {cuisines.length > 0 && (
-          <div className="absolute top-4 left-4 bg-gradient-to-r from-amber-500 to-amber-600 text-[#2a1600] px-3 py-1 rounded-lg text-[10px] font-bold tracking-wider uppercase shadow-xl">
+          <div className="absolute top-3 left-3 bg-amber-500 text-amber-950 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase shadow-sm">
             {cuisines[0]}
           </div>
         )}
       </div>
 
-      {/* ── Beautiful Card Body ── */}
-      <div className="relative p-6 flex flex-col flex-1 z-10 -mt-12">
+      {/* Card Body */}
+      <div className="relative p-5 flex flex-col flex-1 z-10 bg-white">
         
-        {/* Floating Price Badge */}
-        {pricePerPlate > 0 ? (
-          <div className="self-end bg-[#15151e] border border-white/[0.08] shadow-2xl rounded-2xl px-5 py-2.5 mb-2 group-hover:border-amber-500/40 group-hover:shadow-amber-500/20 transition-all duration-300 backdrop-blur-md">
-            <p className="text-[9px] text-gray-500 uppercase tracking-widest leading-none mb-1.5 font-semibold">Starting from</p>
-            <p className="text-xl font-bold text-amber-400 leading-none">
-              ₹{pricePerPlate.toLocaleString('en-IN')}
-              <span className="text-[11px] text-gray-500 font-medium ml-0.5">/pl</span>
-            </p>
-          </div>
-        ) : (
-          <div className="self-end bg-[#15151e] border border-white/[0.08] shadow-2xl rounded-2xl px-5 py-2.5 mb-2 group-hover:border-amber-500/40 group-hover:shadow-amber-500/20 transition-all duration-300 backdrop-blur-md">
-            <p className="text-[9px] text-gray-500 uppercase tracking-widest leading-none mb-1.5 font-semibold">Pricing</p>
-            <p className="text-sm font-bold text-amber-400 leading-none">
-              Inquire
-            </p>
-          </div>
-        )}
-
-        {/* Title & Location */}
-        <div className="mb-5 mt-1">
-          <h3 className="text-2xl font-display font-bold text-white mb-2 group-hover:text-amber-300 transition-colors line-clamp-1 leading-tight">
-            {name}
-          </h3>
-          <p className="text-sm text-gray-400 flex items-center gap-1.5 font-medium">
-            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-white/[0.04] text-amber-500">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+        {/* Header: Title and Pricing */}
+        <div className="flex justify-between items-start gap-4 mb-3">
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-gray-900 group-hover:text-amber-600 transition-colors line-clamp-1 leading-tight mb-1.5">
+              {name}
+            </h3>
+            <p className="text-xs text-gray-500 flex items-center gap-1 font-medium">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-gray-400">
                 <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
               </svg>
-            </span>
-            <span className="truncate">{location}</span>
-          </p>
+              <span className="truncate">{location}</span>
+            </p>
+          </div>
+          
+          <div className="text-right flex-shrink-0 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+            {pricePerPlate > 0 ? (
+              <>
+                <p className="text-[9px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Starting</p>
+                <p className="text-sm font-bold text-gray-900 leading-none">
+                  ₹{pricePerPlate.toLocaleString('en-IN')}
+                  <span className="text-[10px] text-gray-500 font-normal ml-0.5">/pl</span>
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[9px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Pricing</p>
+                <p className="text-xs font-bold text-gray-900 leading-none mt-1">Inquire</p>
+              </>
+            )}
+          </div>
         </div>
 
+        <div className="h-px w-full bg-gray-100 my-3" />
+
         {/* Cuisines Layout */}
-        <div className="flex flex-wrap gap-1.5 mb-8 mt-auto">
-          {cuisines.map((c) => (
-            <span key={c} className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold bg-white/[0.03] text-gray-300 border border-white/[0.05] hover:bg-white/[0.06] transition-colors cursor-default">
-              {c}
-            </span>
+        <div className="flex flex-wrap gap-1.5 mb-5 mt-auto">
+          {cuisines.slice(0, 3).map((c) => (
+             <span key={c} className="px-2.5 py-1 rounded-md text-[10px] font-medium bg-gray-50 text-gray-600 border border-gray-200 transition-colors">
+               {c}
+             </span>
           ))}
+          {cuisines.length > 3 && (
+            <span className="px-2 py-1 rounded-md text-[10px] font-medium bg-gray-50 text-gray-500 border border-gray-200">
+              +{cuisines.length - 3} more
+            </span>
+          )}
         </div>
 
         {/* Premium View Details Button */}
         <Link 
           to={`/caterer/${caterer.slug || caterer._id}`}
-          className="w-full relative overflow-hidden group/btn inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-[#1a1a24] text-white hover:text-black hover:bg-amber-400 transition-all duration-300 border border-white/[0.08] hover:border-amber-400 shadow-lg"
+          className="w-full relative overflow-hidden group/btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-gray-900 hover:bg-amber-500 hover:text-white transition-all duration-300 border border-gray-200 hover:border-amber-500 shadow-sm"
         >
           <span>View Full Profile</span>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform">

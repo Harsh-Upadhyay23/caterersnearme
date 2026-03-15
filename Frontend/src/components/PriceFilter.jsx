@@ -18,7 +18,7 @@ const PriceFilter = ({ maxPrice, onChange }) => (
         className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150 ${
           maxPrice === o.value
             ? 'bg-amber-500 border-amber-500 text-gray-950 shadow-md shadow-amber-900/30'
-            : 'border-white/[0.08] text-gray-500 hover:text-gray-200 hover:border-white/20 hover:bg-white/5'
+            : 'border-gray-200 text-gray-600 hover:text-gray-900 hover:border-amber-500/30 hover:bg-gray-100'
         }`}
       >
         {o.label}
