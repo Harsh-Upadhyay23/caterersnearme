@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCatererAuth } from '../context/CatererAuthContext';
 import { useCart } from '../context/CartContext';
-import faviconUrl from '../assets/favicon.ico';
-
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { caterer, logout: catererLogout } = useCatererAuth();
@@ -34,7 +32,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-14">
 
           <Link to="/caterers" className="flex items-center gap-2 group min-w-0">
-            <img src={faviconUrl} alt="CaterersNearMe" className="w-7 h-7 rounded-lg flex-shrink-0" />
+            <img src="/logo.gif" alt="CaterersNearMe" className="h-12 w-auto flex-shrink-0" />
             <span className="hidden sm:inline-block font-bold text-gray-900 text-[14px] tracking-tight truncate">
               Caterers<span className="text-amber-500">NearMe</span>
             </span>
