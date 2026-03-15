@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ProtectedCatererRoute from './components/ProtectedCatererRoute';
 import Navbar from './components/Navbar';
 import Loader from './components/Loader';
+import ScrollToTop from './components/ScrollToTop';
 
 const CartSidebar = lazy(() => import('./components/CartSidebar'));
 const Caterers = lazy(() => import('./pages/Caterers'));
@@ -26,6 +27,7 @@ function App() {
       <CatererAuthProvider>
         <CartProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <Navbar />
             <Suspense
               fallback={
