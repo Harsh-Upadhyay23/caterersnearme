@@ -17,8 +17,8 @@ const sendTokenResponse = (user, statusCode, res, message) => {
       Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
     ),
     httpOnly: true, // Prevents XSS attacks (client JS cannot access cookie)
-    secure: process.env.NODE_ENV === 'production', // Only HTTPS in prod
-    sameSite: 'strict',
+    secure: true, // Required for cross-site cookies
+    sameSite: 'none',
   };
 
   user.password = undefined; // Remove password from output
@@ -30,6 +30,7 @@ const sendTokenResponse = (user, statusCode, res, message) => {
       success: true,
       message,
       data: user,
+      token, // Include token in response body for localStorage fallback
     });
 };
 
@@ -136,6 +137,8 @@ exports.logoutUser = async (req, res, next) => {
   res.cookie('token', 'none', {
     expires: new Date(Date.now() + 10 * 1000), // Expires in 10 seconds
     httpOnly: true,
+    secure: true,
+    sameSite: 'none',
   });
 
   res.status(200).json({

@@ -17,8 +17,8 @@ const sendTokenResponse = (caterer, statusCode, res, message) => {
       Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
     ),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none',
   };
 
   caterer.password = undefined; // Remove password from output
@@ -30,6 +30,7 @@ const sendTokenResponse = (caterer, statusCode, res, message) => {
       success: true,
       message,
       data: caterer,
+      token, // Include token in response body for localStorage fallback
     });
 };
 
@@ -129,6 +130,8 @@ exports.logoutCaterer = async (req, res, next) => {
   res.cookie('catererToken', 'none', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
+    secure: true,
+    sameSite: 'none',
   });
 
   res.status(200).json({

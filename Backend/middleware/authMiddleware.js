@@ -5,8 +5,10 @@ const User = require('../models/User');
 exports.protect = async (req, res, next) => {
   let token;
 
-  // Check if token exists in cookies
-  if (req.cookies && req.cookies.token) {
+  // Check if token exists in headers or cookies
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies && req.cookies.token) {
     token = req.cookies.token;
   }
 
@@ -37,7 +39,9 @@ exports.protect = async (req, res, next) => {
 exports.protectCaterer = async (req, res, next) => {
   let token;
 
-  if (req.cookies && req.cookies.catererToken) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies && req.cookies.catererToken) {
     token = req.cookies.catererToken;
   }
 
