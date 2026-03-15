@@ -200,7 +200,7 @@ const CatererDashboard = () => {
                           onClick={() => setActiveTab('images')}
                           className="flex items-center gap-2 px-8 py-2.5 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
                         >
-                          Next — Upload Images
+                          Next
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
