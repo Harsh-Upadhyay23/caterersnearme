@@ -2,30 +2,30 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 const CatererCard = ({ caterer, onViewDetails }) => {
-  const { 
-    name, 
-    location = 'Location Not Specified', 
-    pricePerPlate = 0, 
-    cuisines = [], 
-    rating = 0, 
+  const {
+    name,
+    location = 'Location Not Specified',
+    pricePerPlate = 0,
+    cuisines = [],
+    rating = 0,
     image = 'https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=2070&auto=format&fit=crop'
   } = caterer;
 
   return (
-    <article className="group relative flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-[0_2px_10px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-400 ease-out flex-1">
-      
+    <article className="group relative flex flex-col bg-amber-50 rounded-2xl overflow-hidden border border-amber-200 shadow-[0_4px_16px_rgb(251,191,36,0.1)] hover:shadow-[0_8px_30px_rgb(251,191,36,0.2)] hover:-translate-y-1 transition-all duration-400 ease-out flex-1">
+
       {/* Image Section */}
       <div className="relative h-56 w-full overflow-hidden bg-gray-50 flex-shrink-0">
-        <img 
-          src={image} 
-          alt={name} 
+        <img
+          src={image}
+          alt={name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
           loading="lazy"
         />
-        
+
         {/* Subtle top gradient for tag readability */}
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/40 to-transparent" />
-        
+
         {/* Rating Pill overlay */}
         {rating > 0 && (
           <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm border border-black/5">
@@ -35,7 +35,7 @@ const CatererCard = ({ caterer, onViewDetails }) => {
             <span className="text-xs font-bold text-gray-900">{rating.toFixed(1)}</span>
           </div>
         )}
-        
+
         {/* Showcase Cuisine Tag Top Left */}
         {cuisines.length > 0 && (
           <div className="absolute top-3 left-3 bg-amber-500 text-amber-950 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase shadow-sm">
@@ -45,8 +45,8 @@ const CatererCard = ({ caterer, onViewDetails }) => {
       </div>
 
       {/* Card Body */}
-      <div className="relative p-5 flex flex-col flex-1 z-10 bg-white">
-        
+      <div className="relative p-5 flex flex-col flex-1 z-10 bg-transparent">
+
         {/* Header: Title and Pricing */}
         <div className="flex justify-between items-start gap-4 mb-3">
           <div className="flex-1">
@@ -60,8 +60,8 @@ const CatererCard = ({ caterer, onViewDetails }) => {
               <span className="truncate">{location}</span>
             </p>
           </div>
-          
-          <div className="text-right flex-shrink-0 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
+
+          <div className="text-right flex-shrink-0 bg-white/60 px-3 py-1.5 rounded-xl border border-amber-200/50 backdrop-blur-sm">
             {pricePerPlate > 0 ? (
               <>
                 <p className="text-[9px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Starting</p>
@@ -84,19 +84,19 @@ const CatererCard = ({ caterer, onViewDetails }) => {
         {/* Cuisines Layout */}
         <div className="flex flex-wrap gap-1.5 mb-5 mt-auto">
           {cuisines.slice(0, 3).map((c) => (
-             <span key={c} className="px-2.5 py-1 rounded-md text-[10px] font-medium bg-gray-50 text-gray-600 border border-gray-200 transition-colors">
-               {c}
-             </span>
+            <span key={c} className="px-2.5 py-1 rounded-md text-[10px] font-medium bg-white/80 text-amber-900 border border-amber-200 transition-colors shadow-sm">
+              {c}
+            </span>
           ))}
           {cuisines.length > 3 && (
-            <span className="px-2 py-1 rounded-md text-[10px] font-medium bg-gray-50 text-gray-500 border border-gray-200">
+            <span className="px-2 py-1 rounded-md text-[10px] font-medium bg-white/80 text-amber-800 border border-amber-200 shadow-sm">
               +{cuisines.length - 3} more
             </span>
           )}
         </div>
 
         {/* Premium View Details Button */}
-        <Link 
+        <Link
           to={`/caterer/${caterer.slug || caterer._id}`}
           className="w-full relative overflow-hidden group/btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-white text-gray-900 hover:bg-amber-500 hover:text-white transition-all duration-300 border border-gray-200 hover:border-amber-500 shadow-sm"
         >
