@@ -8,12 +8,18 @@ const api = axios.create({
   withCredentials: true, // Required to send/receive HTTP-only cookies
 });
 
-// Add request interceptor to attach Bearer token if available
+// Add request interceptor to attach custom token headers
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const userToken = localStorage.getItem('userToken');
+  const catererToken = localStorage.getItem('catererToken');
+  
+  if (userToken) {
+    config.headers['x-auth-token'] = userToken;
   }
+  if (catererToken) {
+    config.headers['x-caterer-token'] = catererToken;
+  }
+  
   return config;
 });
 

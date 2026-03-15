@@ -22,7 +22,7 @@ app.use(
       "https://caterersnearme-six.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-auth-token", "x-caterer-token"],
     credentials: true,
   })
 );

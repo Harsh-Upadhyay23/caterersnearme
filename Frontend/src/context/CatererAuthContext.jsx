@@ -19,7 +19,7 @@ export const CatererAuthProvider = ({ children }) => {
           setCaterer(data.data);
         }
       } catch (err) {
-        localStorage.removeItem('token');
+        localStorage.removeItem('catererToken');
         setCaterer(null);
       } finally {
         setLoading(false);
@@ -32,7 +32,7 @@ export const CatererAuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/caterers/login', { email, password });
-      if (data.token) localStorage.setItem('token', data.token);
+      if (data.token) localStorage.setItem('catererToken', data.token);
       setCaterer(data.data);
       return data;
     } catch (err) {
@@ -43,7 +43,7 @@ export const CatererAuthProvider = ({ children }) => {
   const register = async (name, email, password, phone, city, address) => {
     try {
       const { data } = await api.post('/caterers/register', { name, email, password, phone, city, address });
-      if (data.token) localStorage.setItem('token', data.token);
+      if (data.token) localStorage.setItem('catererToken', data.token);
       setCaterer(data.data);
       return data;
     } catch (err) {
@@ -64,7 +64,7 @@ export const CatererAuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post('/caterers/logout');
-      localStorage.removeItem('token');
+      localStorage.removeItem('catererToken');
       setCaterer(null);
     } catch (err) {
       console.error('Logout error:', err);

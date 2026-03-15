@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         // If 401 Unauthorized, they just don't have a valid cookie/token
-        localStorage.removeItem('token');
+        localStorage.removeItem('userToken');
         setUser(null);
       } finally {
         setLoading(false);
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
-      if (data.token) localStorage.setItem('token', data.token);
+      if (data.token) localStorage.setItem('userToken', data.token);
       setUser(data.data);
       return data;
     } catch (err) {
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const { data } = await api.post('/auth/register', { name, email, password });
-      if (data.token) localStorage.setItem('token', data.token);
+      if (data.token) localStorage.setItem('userToken', data.token);
       setUser(data.data);
       return data;
     } catch (err) {
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post('/auth/logout');
-      localStorage.removeItem('token');
+      localStorage.removeItem('userToken');
       setUser(null);
     } catch (err) {
       console.error('Logout error:', err);
