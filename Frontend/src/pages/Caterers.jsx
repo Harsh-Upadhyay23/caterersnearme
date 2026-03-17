@@ -48,6 +48,7 @@ const Caterers = () => {
   const [activeChip, setActiveChip] = useState(null);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState('default'); // 'default' | 'asc' | 'desc'
   const PAGE_SIZE = 8;
 
   const debounceRef = useRef(null);
@@ -130,10 +131,20 @@ const Caterers = () => {
 
   const currentPage = Math.min(page, totalPages);
 
+  const sortedResults = useMemo(() => {
+    if (sortOrder === 'asc') {
+      return [...results].sort((a, b) => (a.pricePerPlate ?? a.minPrice ?? 0) - (b.pricePerPlate ?? b.minPrice ?? 0));
+    }
+    if (sortOrder === 'desc') {
+      return [...results].sort((a, b) => (b.pricePerPlate ?? b.minPrice ?? 0) - (a.pricePerPlate ?? a.minPrice ?? 0));
+    }
+    return results;
+  }, [results, sortOrder]);
+
   const paginatedResults = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
-    return results.slice(start, start + PAGE_SIZE);
-  }, [results, currentPage]);
+    return sortedResults.slice(start, start + PAGE_SIZE);
+  }, [sortedResults, currentPage]);
 
   const goToPage = (nextPage) => {
     if (nextPage < 1 || nextPage > totalPages) return;
@@ -271,7 +282,7 @@ const Caterers = () => {
 
         {/* Results meta */}
         {!isLoading && !error && (
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
             <p className="text-xs text-gray-600">
               <span className="text-gray-900 font-semibold">
                 {totalResults}
@@ -285,9 +296,30 @@ const Caterers = () => {
                 </span>
               )}
             </p>
-            {activeChip && (
-              <p className="text-xs text-amber-500 font-medium">Showing: {activeChip}</p>
-            )}
+
+            <div className="flex items-center gap-2">
+              {activeChip && (
+                <p className="text-xs text-amber-500 font-medium">Showing: {activeChip}</p>
+              )}
+              {/* Sort dropdown */}
+              <div className="relative">
+                <select
+                  id="price-sort"
+                  value={sortOrder}
+                  onChange={(e) => { setSortOrder(e.target.value); setPage(1); }}
+                  className="appearance-none pl-3 pr-8 py-1.5 text-xs font-semibold rounded-full border border-gray-200 bg-white text-gray-700 hover:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300 cursor-pointer transition-colors"
+                >
+                  <option value="default">Sort by price</option>
+                  <option value="asc">Price: Low → High</option>
+                  <option value="desc">Price: High → Low</option>
+                </select>
+                <span className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                    <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clipRule="evenodd" />
+                  </svg>
+                </span>
+              </div>
+            </div>
           </div>
         )}
 

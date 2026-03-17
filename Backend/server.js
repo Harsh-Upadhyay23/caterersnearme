@@ -8,13 +8,13 @@ const authRoutes = require('./routes/authRoutes');
 const catererRoutes = require('./routes/catererRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
-// ─── Connect to Database ──────────────────────────────────────────────────────
+
 connectDB();
 
-// ─── App Setup ────────────────────────────────────────────────────────────────
+
 const app = express();
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
+
 app.use(
   cors({
     origin: [
@@ -31,7 +31,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({
     success: true,
