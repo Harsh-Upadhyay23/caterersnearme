@@ -1,5 +1,6 @@
 const Caterer = require('../models/Caterer');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/emailService');
 
 // Helper to generate JWT
 const signToken = (id) => {
@@ -138,4 +139,77 @@ exports.logoutCaterer = async (req, res, next) => {
     success: true,
     message: 'Caterer logged out successfully',
   });
+};
+
+// @desc    Send OTP for caterer login
+// @route   POST /api/caterers/send-otp
+// @access  Public
+exports.sendOTP = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide an email' });
+    }
+
+    const caterer = await Caterer.findOne({ email });
+    if (!caterer) {
+      return res.status(404).json({ success: false, message: 'No caterer found with this email' });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    caterer.otp = otp;
+    caterer.otpExpires = Date.now() + 10 * 60 * 1000;
+    await caterer.save({ validateBeforeSave: false });
+
+    const message = `Your OTP for login is: ${otp}\n\nIt is valid for 10 minutes.`;
+    
+    try {
+      await sendEmail({
+        email: caterer.email,
+        subject: 'Caterer Login OTP',
+        message
+      });
+      res.status(200).json({ success: true, message: 'OTP sent to email' });
+    } catch (err) {
+      caterer.otp = undefined;
+      caterer.otpExpires = undefined;
+      await caterer.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Verify OTP and login caterer
+// @route   POST /api/caterers/verify-otp
+// @access  Public
+exports.verifyOTP = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Please provide email and OTP' });
+    }
+
+    const caterer = await Caterer.findOne({ 
+      email, 
+      otp, 
+      otpExpires: { $gt: Date.now() } 
+    }).select('+otp');
+
+    if (!caterer) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    caterer.otp = undefined;
+    caterer.otpExpires = undefined;
+    await caterer.save({ validateBeforeSave: false });
+
+    sendTokenResponse(caterer, 200, res, 'Login successful');
+  } catch (error) {
+    next(error);
+  }
 };

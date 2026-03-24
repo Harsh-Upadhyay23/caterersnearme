@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/emailService');
 
 // Helper to generate JWT
 const signToken = (id) => {
@@ -145,4 +146,77 @@ exports.logoutUser = async (req, res, next) => {
     success: true,
     message: 'User logged out successfully',
   });
+};
+
+// @desc    Send OTP for login
+// @route   POST /api/auth/send-otp
+// @access  Public
+exports.sendOTP = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide an email' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No user found with this email' });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    user.otp = otp;
+    user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save({ validateBeforeSave: false });
+
+    const message = `Your OTP for login is: ${otp}\n\nIt is valid for 10 minutes.`;
+    
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'Your Login OTP',
+        message
+      });
+      res.status(200).json({ success: true, message: 'OTP sent to email' });
+    } catch (err) {
+      user.otp = undefined;
+      user.otpExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      return res.status(500).json({ success: false, message: 'Email could not be sent' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Verify OTP and login
+// @route   POST /api/auth/verify-otp
+// @access  Public
+exports.verifyOTP = async (req, res, next) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Please provide email and OTP' });
+    }
+
+    const user = await User.findOne({ 
+      email, 
+      otp, 
+      otpExpires: { $gt: Date.now() } 
+    }).select('+otp');
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired OTP' });
+    }
+
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    sendTokenResponse(user, 200, res, 'Login successful');
+  } catch (error) {
+    next(error);
+  }
 };

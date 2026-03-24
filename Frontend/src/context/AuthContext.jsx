@@ -62,12 +62,34 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const sendOTP = async (email) => {
+    try {
+      const { data } = await api.post('/auth/send-otp', { email });
+      return data;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || 'Failed to send OTP');
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      const { data } = await api.post('/auth/verify-otp', { email, otp });
+      if (data.token) localStorage.setItem('userToken', data.token);
+      setUser(data.data);
+      return data;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || 'Invalid or expired OTP');
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    sendOTP,
+    verifyOTP,
     isAuthenticated: !!user,
   };
 

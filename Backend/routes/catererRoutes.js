@@ -18,11 +18,15 @@ const {
   loginCaterer,
   getMeCaterer,
   logoutCaterer,
+  sendOTP,
+  verifyOTP
 } = require('../controllers/catererAuthController');
 
 // Auth Routes
 router.post('/register', registerCaterer);
 router.post('/login', loginCaterer);
+router.post('/send-otp', sendOTP);
+router.post('/verify-otp', verifyOTP);
 router.get('/me', protectCaterer, getMeCaterer);
 router.post('/logout', logoutCaterer);
 

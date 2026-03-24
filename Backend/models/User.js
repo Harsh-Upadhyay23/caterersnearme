@@ -31,6 +31,13 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    otp: {
+      type: String,
+      select: false,
+    },
+    otpExpires: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
@@ -52,7 +59,7 @@ userSchema.set('toJSON', {
 userSchema.pre('save', async function (next) {
   // Only hash if the password was modified (or is new)
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
 
   const salt = await bcrypt.genSalt(10);

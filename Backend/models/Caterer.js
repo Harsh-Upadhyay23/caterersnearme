@@ -76,6 +76,13 @@ const catererSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    otp: {
+      type: String,
+      select: false,
+    },
+    otpExpires: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

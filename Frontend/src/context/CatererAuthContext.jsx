@@ -71,6 +71,26 @@ export const CatererAuthProvider = ({ children }) => {
     }
   };
 
+  const sendOTP = async (email) => {
+    try {
+      const { data } = await api.post('/caterers/send-otp', { email });
+      return data;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || 'Failed to send OTP');
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      const { data } = await api.post('/caterers/verify-otp', { email, otp });
+      if (data.token) localStorage.setItem('catererToken', data.token);
+      setCaterer(data.data);
+      return data;
+    } catch (err) {
+      throw new Error(err.response?.data?.message || 'Invalid or expired OTP');
+    }
+  };
+
   const value = {
     caterer,
     loading,
@@ -78,6 +98,8 @@ export const CatererAuthProvider = ({ children }) => {
     register,
     updateProfile,
     logout,
+    sendOTP,
+    verifyOTP,
     isAuthenticated: !!caterer,
   };
 

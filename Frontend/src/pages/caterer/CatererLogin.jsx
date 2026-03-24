@@ -7,13 +7,16 @@ import Loader from '../../components/Loader';
 const CatererLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginMode, setLoginMode] = useState('otp'); // 'password' | 'otp'
+  const [otpSent, setOtpSent] = useState(false);
   
-  const { login } = useCatererAuth();
+  const { login, sendOTP, verifyOTP } = useCatererAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handlePasswordLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill in all fields');
@@ -27,6 +30,42 @@ const CatererLogin = () => {
       navigate('/caterer/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      setError('Please enter your email first');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError('');
+      await sendOTP(email);
+      setOtpSent(true);
+    } catch (err) {
+      setError(err.message || 'Failed to send OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    if (!email || !otp) {
+      setError('Please enter email and OTP');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError('');
+      await verifyOTP(email, otp);
+      navigate('/caterer/dashboard');
+    } catch (err) {
+      setError(err.message || 'Invalid or expired OTP');
     } finally {
       setLoading(false);
     }
@@ -49,6 +88,23 @@ const CatererLogin = () => {
             <p className="text-xs text-gray-500">Log in to manage your dashboard.</p>
           </div>
 
+          <div className="flex bg-gray-100 p-1 rounded-lg mb-4">
+            <button
+              type="button"
+              className={`flex-1 text-xs py-1.5 font-medium rounded-md transition-colors ${loginMode === 'password' ? 'bg-white shadow relative text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => { setLoginMode('password'); setError(''); }}
+            >
+              Password
+            </button>
+            <button
+              type="button"
+              className={`flex-1 text-xs py-1.5 font-medium rounded-md transition-colors ${loginMode === 'otp' ? 'bg-white shadow relative text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => { setLoginMode('otp'); setError(''); setOtpSent(false); }}
+            >
+              OTP
+            </button>
+          </div>
+
           {error && (
             <div className="mb-3 p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" /></svg>
@@ -56,41 +112,93 @@ const CatererLogin = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <label className="block text-[10px] font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Email</label>
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field py-2 text-sm" 
-                placeholder="contact@business.com"
-                required
-              />
+          {otpSent && loginMode === 'otp' && !error && (
+            <div className="mb-4 p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+              OTP sent successfully! Please check your email.
             </div>
+          )}
 
-            <div>
-              <label className="block text-[10px] font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Password</label>
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-field py-2 text-sm" 
-                placeholder="••••••••"
-                required
-              />
-            </div>
+          {loginMode === 'password' ? (
+            <form onSubmit={handlePasswordLogin} className="space-y-3">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Email</label>
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-field py-2 text-sm" 
+                  placeholder="contact@business.com"
+                  required
+                />
+              </div>
 
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="btn-primary w-full py-2.5 text-sm mt-2"
-            >
-              {loading ? (
-                <Loader className="w-3.5 h-3.5 -ml-1 mr-2" />
-              ) : 'Sign in'}
-            </button>
-          </form>
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Password</label>
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-field py-2 text-sm" 
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="btn-primary w-full py-2.5 text-sm mt-2"
+              >
+                {loading ? (
+                  <Loader className="w-3.5 h-3.5 -ml-1 mr-2" />
+                ) : 'Sign in'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={otpSent ? handleVerifyOTP : handleSendOTP} className="space-y-3">
+              <div>
+                <label className="block text-[10px] font-semibold text-gray-500 mb-0.5 uppercase tracking-wide">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-field py-2 text-sm"
+                  placeholder="contact@business.com"
+                  disabled={otpSent}
+                  required
+                />
+              </div>
+
+              {otpSent && (
+                <div>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wide">Enter OTP</label>
+                    <button type="button" onClick={() => setOtpSent(false)} className="text-[10px] font-semibold text-amber-500 hover:text-amber-600">Change Email</button>
+                  </div>
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="input-field py-2 text-sm text-center tracking-widest font-mono"
+                    placeholder="123456"
+                    maxLength={6}
+                    required
+                  />
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full py-2.5 text-sm mt-2"
+              >
+                {loading ? (
+                  <Loader className="w-3.5 h-3.5 -ml-1 mr-2" />
+                ) : (otpSent ? 'Verify & Login' : 'Send OTP')}
+              </button>
+            </form>
+          )}
 
           <p className="mt-4 text-center text-xs text-gray-500 border-t border-gray-100 pt-4">
             Not a partner? <Link to="/caterer/register" className="font-semibold text-gray-900 hover:text-amber-500 transition-colors">Register</Link>
